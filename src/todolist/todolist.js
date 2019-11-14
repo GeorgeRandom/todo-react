@@ -1,26 +1,86 @@
 import React from 'react';
-class Todo {
-    constructor (project,dueDate,priority,name,content) {
-        this.checked = false;
-        this.id = Date.now();
-        this.project = project;
-        this.dueDate = dueDate;
-        this.priority = priority;
-        this.name = name;
-        this.content = content
-    }
+
+//base
+const stored = {todos: [
+        {
+        projectNum: 1,
+        id : 1,
+        dueDate : '25/11/2019',
+        priority : 'high',
+        name : 'first todo',
+        content : 'the first todo of the first project',
+        checked : false,
+        },{
+        projectNum : 1,
+        id : 2,
+        dueDate : '47/21/4078',
+        priority : 'medium',
+        name : 'second todo',
+        content : 'another very important todo',
+        checked : false,        
+        },{
+        projectNum: 2,
+        id : 7,
+        dueDate : '25/18/2019',
+        priority : 'high',
+        name : 'bitouflade',
+        content : 'lets bitoufle',
+        checked : false,
+        },{
+        projectNum : 2,
+        id: 49,
+        dueDate : null,
+        priority : null,
+        name : 'étrange...',
+        content : 'un todo étrangement vide',
+        checked : false,
+        }
+        ],
+        projects : [{
+            number : 1,
+            title : "first project",
+            desc : "this is the first project"
+            },{
+            number : 2,
+            title : 'second project',
+            desc : 'a history of bitoufling'
+            }
+        ]
+}
+let lonely = makeTodo({
+    name:'lone todo',
+    content : 'a lonely todo',
+})
+stored.todos.push(lonely)
+console.log(stored)
+
+
+
+    
+// fonctions!
+function makeTodo({name,
+        content,
+        dueDate = null,
+        priority = null,
+        projectNum = 0}){
+    return({
+        name,
+        content,
+        dueDate,
+        priority,
+        projectNum,
+        id : Date.now(),
+        checked : false
+    })
 }
 
 class TodoListApp extends React.Component {
     constructor(props){
         super(props);
-        let todo1 = new Todo (1,28,'high','prout','faire des prouts')
-        let todo2 = new Todo (2,4012,'medium','pouet','manger un ragondin');
-        let project1 = {number : 1, name : 'bite'}
-        let project2 = {number : 2, name : 'rebite'}
         this.state = {
-            projects : [project1,project2],
-            list : [todo1,todo2] 
+            list : stored.todos,
+            projects : stored.projects,
+            current : null
         }
     }
     /* addTodo(obj) {
@@ -46,7 +106,11 @@ class TodoListApp extends React.Component {
         }
         )
     } */
-    
+
+    handleProjectSelect = (num)=>{
+        let newcurr=parseInt(num,10)
+        this.setState({current : newcurr})
+    }
     render(){
         return (
          <div>   
@@ -55,8 +119,11 @@ class TodoListApp extends React.Component {
             </div>
             <div className='container'>
             
-            <LeftPanel projects={this.state.projects}/>
-            <RightPanel list={this.state.list}/>
+            <LeftPanel projects={this.state.projects}
+            onProjectSelect={this.handleProjectSelect} 
+            current={this.state.current}/>
+            <RightPanel list={this.state.list} 
+            current={this.state.current}/>
             </div>
         </div>
         )
@@ -64,15 +131,25 @@ class TodoListApp extends React.Component {
 }
 
 class LeftPanel extends React.Component {
+    
     render(){
         return(
             <div className='left-container'>
-                <ProjectList projects={this.props.projects}/>
+                <ProjectList projects={this.props.projects}
+                selectProject={this.props.onProjectSelect} 
+                current={this.props.current}
+                />
             </div>
         )
     }
 }
 class ProjectList extends React.Component {
+
+    
+    clickProject = (event) =>{
+        let selected = event.target.dataset.id;
+        this.props.selectProject(selected)
+    }
     
     render(){
         let list=this.props.projects;
@@ -88,8 +165,11 @@ class ProjectList extends React.Component {
         return list.map((project)=>{
             return (
                 <li key={project.number}>
-                {project.number} | {project.name}
-                 |<button className='edit project'> edit</button>
+                {project.number} | {project.title} |
+                <button className='select-project'
+                 onClick={this.clickProject} 
+                 data-id = {project.number}
+                 > select</button>
                 </li>
                 
                 
@@ -102,18 +182,27 @@ class ProjectList extends React.Component {
     
 }
 class RightPanel extends React.Component {
+
     render(){
         return (
         <div className='right-container'>
-            <div className='todo-display'> <TodoDisplay list={this.props.list}/> </div>
+            <div className='todo-display'> 
+            <TodoDisplay list={this.props.list} 
+            current={this.props.current}
+            /> </div>
             <div className='right-controls'> <RightCtrls /> </div> 
         </div>
         )
     }
 }
 class TodoDisplay extends React.Component {
-    renderTodos(list){
-        return list.map((todo)=>{
+    sortByProj = (list,num)=>{
+        if (num === null){return list} else
+        return list.filter((item)=>item.projectNum===num)
+    }
+    renderTodos(list, num){
+        let sortedList = this.sortByProj(list,num)
+        return sortedList.map((todo)=>{
             return (
                 <li key ={todo.id}>
                     name : {todo.name} priority : {todo.priority} 
@@ -125,7 +214,7 @@ class TodoDisplay extends React.Component {
     render(){
         return(
             <ul>
-                {this.renderTodos(this.props.list)}
+                {this.renderTodos(this.props.list, this.props.current)}
             </ul>
         )
     } 
