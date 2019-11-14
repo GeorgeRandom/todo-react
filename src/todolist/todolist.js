@@ -104,6 +104,14 @@ class TodoListApp extends React.Component {
         let newcurr=parseInt(num,10) || null;
         this.setState({currentTodo : newcurr})
     }
+    handleTodoSave =(newtodo)=>{
+        let tdIndex= this.state.list.findIndex((todo)=>{
+            return todo.id===newtodo.id
+            })
+        this.setState((state)=>{
+            state.list[tdIndex] = newtodo
+        })
+    }
     resetCurrentTodo =()=>{
         this.setState({currentTodo : null})
     }
@@ -132,7 +140,9 @@ class TodoListApp extends React.Component {
                 currentTodo = {this.state.currentTodo}
                 onTodoSelect={this.handleTodoSelect}
                 onTodoCheck={this.handleTodoCheck}
-                reset = {this.resetCurrentTodo}/>
+                onTodoSave={this.handleTodoSave}
+                reset = {this.resetCurrentTodo}
+                />
             <LeftCtrls />
             <RightCtrls /> 
             
@@ -196,6 +206,7 @@ class RightPanel extends React.Component {
                 currentProject={this.props.currentProject}
                 selectTodo={this.props.onTodoSelect}
                 checkTodo={this.props.onTodoCheck}
+                
 
                 /> 
             </div>
@@ -208,6 +219,7 @@ class RightPanel extends React.Component {
                 list={this.props.list}
                 reset = {this.props.reset}
                 checkTodo={this.props.onTodoCheck}
+                saveChanges={this.props.onTodoSave}
                 />
             </div>
         }
@@ -355,26 +367,96 @@ class RightTitle extends React.Component {
 
 
 class ExpandedTodo extends React.Component {
-    render(){
-        let todo = this.props.list.find(
+    constructor(props){
+        super(props);
+        this.todo=this.props.list.find(
             ((todo)=>todo.id===this.props.currentTodo)
-        )
+            )
+        this.state = {
+            editing : false,
+            todo:this.todo
+            }
+    }
+    toggleEdit =()=>{
+        let antiedit=!this.state.editing
+        this.setState({editing: antiedit});
+    }
+    handleChange = (event) =>{
+        
+        let key = event.target.name;
+        let value = event.target.value
+        this.setState((state)=>{
+            state.todo[key] = value 
+            return state
+       })
+        
+        
+    }
+    saveChanges = ()=>{
+        this.setState({editing:false})
+        this.props.saveChanges(this.state.todo)
+    }
+    render(){
+        let todo=this.state.todo
+        let editing=this.state.editing
         return (
+            
             <div className="todo-details">
-                <h1>{todo.name}</h1>
-                <p>{todo.content}</p>
+                <input type='text'
+                    className='todolist title'
+                    name='name'
+                    value={todo.name}
+                    disabled={!editing}
+                    onChange={this.handleChange}
+                   >
+                </input>
+                <textarea
+                    className='todolist description'
+                    name='content'
+                    disabled={!editing}
+                    value={todo.content}
+                    rows={10}
+                    onChange={this.handleChange}>
+                    </textarea>
                 <p>date : {todo.dueDate}</p>
-                <p>priority:{todo.priority}</p>
-                <button onClick={this.props.reset}>BACK</button>
-                <TodoCheckbox
-                id={todo.id}
-                checked={todo.checked}
-                checkTodo={this.props.checkTodo}
-                />
+                <p>priority:<select 
+                            name='priority'
+                            value={todo.priority}
+                            disabled={!editing}
+                            onChange={this.handleChange}>
+                        <option value='high'>high</option>
+                        <option value='medium'>Medium</option>
+                        <option value='low'>Low</option>
+                    </select>
+                </p>
+                
+                <p><button onClick={this.props.reset}>Back</button>
+                    <EditSaveButton
+                    editing={editing}
+                    clickEdit={this.toggleEdit}
+                    clickSave={this.saveChanges}
+                    />
+                    <TodoCheckbox
+                    id={todo.id}
+                    checked={todo.checked}
+                    checkTodo={this.props.checkTodo}
+                    />
+                </p>
             </div>
         )
     }
 }
+function EditSaveButton(props){
+    if (props.editing)
+        return(
+            <button
+            onClick={props.clickSave}>SAVE</button>
+        )
+    return(
+        <button onClick={props.clickEdit}>EDIT</button>
+    )
+}
+
 class TodoCheckbox extends React.Component{
     clickCheck = (event)=>{
         console.log(event.target.dataset.id,event.target);
@@ -390,49 +472,6 @@ class TodoCheckbox extends React.Component{
             )
     }
 }
-
-
-
-
-/* class NewTodoForm extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            name : '',
-            content :'',
-            project : null,
-            number : null,
-            priority :'',
-            dueDate : null
-        }
-    }
-    submit (event) {
-        event.preventDefault()
-        console.log(this.state);
-        console.log(this.props)
-        }
-    changeHandler = (event) => {
-        let name = event.target.name;
-        let val = event.target.value;
-        this.setState({
-            [name] : val
-        })
-    }
-    render(){
-        return (
-            <form className="todoform"
-            onSubmit={this.submit.bind(this)}>
-                name: <input type='text' name='name' onChange={this.changeHandler}></input>
-                content : <input type='text' name='content' onChange={this.changeHandler}></input>
-                project : <input type='number' name='project' onChange={this.changeHandler}></input>
-                duedate : <input type='number' name='number' onChange={this.changeHandler}></input>
-                priority: <input type='text' name='priority' onChange={this.changeHandler}></input>
-                <button type='submit'>submit</button>
-            </form>
-        )
-    }
-} */
-
 
 
 export default TodoListApp

@@ -17,4 +17,31 @@
   color: white;
 }
 
+.todo-details{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+textarea{
+  overflow: auto; 
+  word-wrap: break-word; 
+  font-family:Courier, monospace;
+	font-weight:normal;
+  font-size:16px;
+  resize:none;
+  width:80%;
+	padding-bottom:34px;
+
+}
+:disabled{
+  background: none;
+  border-width : 0px;
+}
+.title{
+  font-size: 2.5em;
+  text-align : center;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
 
