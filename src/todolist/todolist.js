@@ -16,7 +16,7 @@ const stored = {todos: [
         dueDate : '47/21/4078',
         priority : 'medium',
         name : 'second todo',
-        content : 'another very important todo',
+        content : 'another very important todo, with quite a very very long description indeed',
         checked : false,        
         },{
         projectNum: 2,
@@ -25,7 +25,7 @@ const stored = {todos: [
         priority : 'high',
         name : 'bitouflade',
         content : 'lets bitoufle',
-        checked : false,
+        checked : true,
         },{
         projectNum : 2,
         id: 49,
@@ -111,6 +111,15 @@ class TodoListApp extends React.Component {
         let newcurr=parseInt(num,10) || null
         this.setState({currentProject : newcurr})
     }
+    handleTodoCheck = (num)=>{
+        let tdIndex= this.state.list.findIndex((td)=>{
+            return td.id===parseInt(num,10)
+        })
+       this.setState((state)=>{
+            state.list[tdIndex].checked = !state.list[tdIndex].checked 
+            return state
+       })
+    }
     render(){
         return (
         <div className='container'>
@@ -122,9 +131,9 @@ class TodoListApp extends React.Component {
                 projects={this.state.projects}
                 currentTodo = {this.state.currentTodo}
                 onTodoSelect={this.handleTodoSelect}
+                onTodoCheck={this.handleTodoCheck}
                 reset = {this.resetCurrentTodo}/>
-            <div className = 'left-ctrls'><LeftCtrls />
-                </div>
+            <LeftCtrls />
             <RightCtrls /> 
             
         </div>
@@ -135,7 +144,9 @@ class TodoListApp extends React.Component {
 class LeftCtrls extends React.Component {
     render(){
         return (
-            <button>VARIOUS CONTROLS FOR THE</button>
+            <div className = 'left-ctrls'>
+                <button>New Project</button>
+            </div>
         )
     }
 }
@@ -184,6 +195,8 @@ class RightPanel extends React.Component {
                 <TodoListDisplay list={this.props.list} 
                 currentProject={this.props.currentProject}
                 selectTodo={this.props.onTodoSelect}
+                checkTodo={this.props.onTodoCheck}
+
                 /> 
             </div>
             }
@@ -194,6 +207,7 @@ class RightPanel extends React.Component {
                 currentTodo={this.props.currentTodo}
                 list={this.props.list}
                 reset = {this.props.reset}
+                checkTodo={this.props.onTodoCheck}
                 />
             </div>
         }
@@ -278,14 +292,20 @@ class TodoListDisplay extends React.Component {
         if (num === null){return list} else
         return list.filter((item)=>item.projectNum===num)
     }
+   
     renderTodos(list, num){
         let sortedList = this.sortByProj(list,num)
         return sortedList.map((todo)=>{
             return (
                 <li key ={todo.id}>
                     <span>
-                    name : <b>{todo.name}</b> 
-                    priority : <b>{todo.priority}</b>
+                    <TodoCheckbox
+                    id={todo.id}
+                    checked={todo.checked}
+                    checkTodo={this.props.checkTodo}
+                    />
+                    name : <b>{todo.name} </b> 
+                    priority : <b>{todo.priority} </b>
                     <button data-id={todo.id}
                     onClick={this.clickTodo}>edit</button>
                     </span>
@@ -295,6 +315,7 @@ class TodoListDisplay extends React.Component {
         }
         )
     }
+    
     clickTodo = (event) =>{
             let selected = event.target.dataset.id;
             console.log(event.target)
@@ -345,8 +366,28 @@ class ExpandedTodo extends React.Component {
                 <p>date : {todo.dueDate}</p>
                 <p>priority:{todo.priority}</p>
                 <button onClick={this.props.reset}>BACK</button>
+                <TodoCheckbox
+                id={todo.id}
+                checked={todo.checked}
+                checkTodo={this.props.checkTodo}
+                />
             </div>
         )
+    }
+}
+class TodoCheckbox extends React.Component{
+    clickCheck = (event)=>{
+        console.log(event.target.dataset.id,event.target);
+        this.props.checkTodo(event.target.dataset.id)
+    }
+    render(){
+        return(
+        <input type='checkbox' 
+            className='todo-checkbox'
+            data-id={this.props.id}
+            checked = {this.props.checked}
+            onChange={this.clickCheck}></input>
+            )
     }
 }
 
