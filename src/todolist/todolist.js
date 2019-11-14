@@ -44,6 +44,10 @@ const stored = {todos: [
             number : 2,
             title : 'second project',
             desc : 'a history of bitoufling'
+            },{
+            number: 42,
+            title : 'project #42',
+            desc: 'an empty project'    
             }
         ]
 }
@@ -80,11 +84,12 @@ class TodoListApp extends React.Component {
         this.state = {
             list : stored.todos,
             projects : stored.projects,
-            current : null
+            currentProject: null,
+            currentTodo :null,
         }
     }
     /* addTodo(obj) {
-        let currentlist = this.state.list
+        let currentProjectlist = this.state.list
         let todo = new Todo (
             obj.project , 
             obj.dueDate,
@@ -92,43 +97,57 @@ class TodoListApp extends React.Component {
             obj.name,
             obj.content);
         this.setState({
-            list : [...currentlist,todo]
+            list : [...currentProjectlist,todo]
         })
     } */
-    /* 
-    renderTodos(){
-        return this.state.list.map((todo)=>{
-            return (
-                <li key ={todo.id}>
-                    name : {todo.name} priority : {todo.priority} 
-                </li>
-            )
-        }
-        )
-    } */
-
+    handleTodoSelect = (num)=>{
+        let newcurr=parseInt(num,10) || null;
+        this.setState({currentTodo : newcurr})
+    }
+    resetCurrentTodo =()=>{
+        this.setState({currentTodo : null})
+    }
     handleProjectSelect = (num)=>{
         let newcurr=parseInt(num,10) || null
-        this.setState({current : newcurr})
+        this.setState({currentProject : newcurr})
     }
     render(){
         return (
-         <div>   
-            
-            <div className='container'>
-            
+        <div className='container'>
             <LeftPanel projects={this.state.projects}
-            onProjectSelect={this.handleProjectSelect} 
-            current={this.state.current}/>
+                onProjectSelect={this.handleProjectSelect} 
+                currentProject={this.state.currentProject}/>
             <RightPanel list={this.state.list} 
-            current={this.state.current}
-            projects={this.state.projects}/>
-            </div>
+                currentProject={this.state.currentProject}
+                projects={this.state.projects}
+                currentTodo = {this.state.currentTodo}
+                onTodoSelect={this.handleTodoSelect}
+                reset = {this.resetCurrentTodo}/>
+            <div className = 'left-ctrls'><LeftCtrls />
+                </div>
+            <RightCtrls /> 
+            
         </div>
         )
     }
 }
-
+//CTRLS
+class LeftCtrls extends React.Component {
+    render(){
+        return (
+            <button>VARIOUS CONTROLS FOR THE</button>
+        )
+    }
+}
+class RightCtrls extends React.Component {
+    render(){
+        return(
+            <div className='right-controls'> 
+                <button>ADD NEW</button>
+            </div>
+        )
+    }
+}
 //PANELS
 
 class LeftPanel extends React.Component {
@@ -143,12 +162,9 @@ class LeftPanel extends React.Component {
                 <div className='left-display'>
                     <ProjectList projects={this.props.projects}
                     selectProject={this.props.onProjectSelect} 
-                    current={this.props.current}
+                    currentProject={this.props.currentProject}
                     />
                     </div>
-                <div className = 'left-ctrls'>
-
-                </div>
             </div>
         )
     }
@@ -157,28 +173,48 @@ class LeftPanel extends React.Component {
 class RightPanel extends React.Component {
 
     render(){
-        return (
-        <div className='right-container'>
+        let rightcontent
+        if(!this.props.currentTodo){
+            rightcontent=
             <div className='right-display'> 
-            <RightTitle 
-            current={this.props.current} 
-            projects={this.props.projects}
-            />
-            <TodoDisplay list={this.props.list} 
-            current={this.props.current}
-            /> </div>
-            <div className='right-controls'> <RightCtrls /> </div> 
-        </div>
+                <RightTitle 
+                currentProject={this.props.currentProject} 
+                projects={this.props.projects}
+                />
+                <TodoListDisplay list={this.props.list} 
+                currentProject={this.props.currentProject}
+                selectTodo={this.props.onTodoSelect}
+                /> 
+            </div>
+            }
+        else {
+            rightcontent=
+            <div className='right-display'> 
+                <ExpandedTodo 
+                currentTodo={this.props.currentTodo}
+                list={this.props.list}
+                reset = {this.props.reset}
+                />
+            </div>
+        }
+
+            return (
+            <div className='right-container'>
+                {rightcontent}
+            </div>
         )
     }
 }
 
+  
+    
 //INSIDE LEFT PANEL
 class LeftHeader extends React.Component {
     render(){
         return (
             <div className='left-header'>
-            <h1 span='2'>POUET</h1>
+            <h1>LATR</h1>
+            <p>efficient procrastinating</p>
             </div>
         )
     }
@@ -237,7 +273,7 @@ class ProjectList extends React.Component {
     
 }
 //INSIDE RIGHT PANEL
-class TodoDisplay extends React.Component {
+class TodoListDisplay extends React.Component {
     sortByProj = (list,num)=>{
         if (num === null){return list} else
         return list.filter((item)=>item.projectNum===num)
@@ -247,16 +283,27 @@ class TodoDisplay extends React.Component {
         return sortedList.map((todo)=>{
             return (
                 <li key ={todo.id}>
-                    name : {todo.name} priority : {todo.priority} 
+                    <span>
+                    name : <b>{todo.name}</b> 
+                    priority : <b>{todo.priority}</b>
+                    <button data-id={todo.id}
+                    onClick={this.clickTodo}>edit</button>
+                    </span>
+                    
                 </li>
             )
         }
         )
     }
+    clickTodo = (event) =>{
+            let selected = event.target.dataset.id;
+            console.log(event.target)
+            this.props.selectTodo(selected)
+    }
     render(){
         return(
             <ul>
-                {this.renderTodos(this.props.list, this.props.current)}
+                {this.renderTodos(this.props.list, this.props.currentProject)}
             </ul>
         )
     } 
@@ -264,16 +311,16 @@ class TodoDisplay extends React.Component {
 }
 class RightTitle extends React.Component {
     render(){
-        let p=this.props.current;
+        let p=this.props.currentProject;
         let titletext = 'FULL LIST';
         let subtitle = 'all the todos'
         if (p) {
-            let currentp = this.props.projects.find((proj)=>{
+            let currentProjectp = this.props.projects.find((proj)=>{
                 return (proj.number === p)
                 })
 
-            titletext = currentp.title
-            subtitle = currentp.desc
+            titletext = currentProjectp.title
+            subtitle = currentProjectp.desc
         }
         return(
             <div className = 'todo-title'>
@@ -283,13 +330,26 @@ class RightTitle extends React.Component {
         )
     }
 }
-class RightCtrls extends React.Component {
+
+
+
+class ExpandedTodo extends React.Component {
     render(){
-        return(
-            <button>ADD NEW</button>
+        let todo = this.props.list.find(
+            ((todo)=>todo.id===this.props.currentTodo)
+        )
+        return (
+            <div className="todo-details">
+                <h1>{todo.name}</h1>
+                <p>{todo.content}</p>
+                <p>date : {todo.dueDate}</p>
+                <p>priority:{todo.priority}</p>
+                <button onClick={this.props.reset}>BACK</button>
+            </div>
         )
     }
 }
+
 
 
 
