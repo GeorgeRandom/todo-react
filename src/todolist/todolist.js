@@ -39,15 +39,18 @@ const stored = {todos: [
         projects : [{
             number : 1,
             title : "first project",
-            desc : "this is the first project"
+            desc : "this is the first project",
+            icon:0,
             },{
             number : 2,
             title : 'second project',
-            desc : 'a history of bitoufling'
+            desc : 'a history of bitoufling',
+            icon:2,
             },{
             number: 42,
             title : 'project #42',
-            desc: 'an empty project'    
+            desc: 'an empty project'  ,
+            icon:4,  
             }
         ]
 }
@@ -61,11 +64,12 @@ console.log(stored)
 
 
     
-// fonctions!
+
+ // fonctions!
 function makeTodo({name,
         content,
-        dueDate = null,
-        priority = null,
+        dueDate = undefined,
+        priority = 'low',
         projectNum = 0}){
     return({
         name,
@@ -315,6 +319,43 @@ class ProjectList extends React.Component {
     
 }
 //INSIDE RIGHT PANEL
+class RightTitle extends React.Component {
+    constructor(props){
+        super(props);      
+        this.state = {
+            editing : false,
+            currentProj : this.props.currentProject
+        }
+    }
+    saveChanges=()=>{
+        console.log('save')
+    }
+    toggleEdit =()=>{
+        let antiedit=!this.state.editing
+        this.setState({editing: antiedit});
+    }
+    render(){
+        let titletext = 'FULL LIST';
+        let subtitle = 'all the todos'
+        let butt=''
+        let p = this.props.currentProject
+        
+        if (p){    
+            titletext = this.state.currentProject.title
+            subtitle = this.state.currentProject.desc
+            butt= <EditSaveButton editing={this.state.editing}
+                    clickEdit={this.toggleEdit}
+                    clickSave={this.saveChanges}/>
+        }
+        return(
+            <div className = 'todo-title'>
+            <h1>{titletext}</h1>
+            <h3>{subtitle} {butt }</h3>
+            </div>
+        )
+    }
+}
+
 class TodoListDisplay extends React.Component {
     sortByProj = (list,num)=>{
         if (num === null){return list} else
@@ -358,27 +399,6 @@ class TodoListDisplay extends React.Component {
     } 
 
 }
-class RightTitle extends React.Component {
-    render(){
-        let p=this.props.currentProject;
-        let titletext = 'FULL LIST';
-        let subtitle = 'all the todos'
-        if (p) {
-            let currentProjectp = this.props.projects.find((proj)=>{
-                return (proj.number === p)
-                })
-
-            titletext = currentProjectp.title
-            subtitle = currentProjectp.desc
-        }
-        return(
-            <div className = 'todo-title'>
-            <h1>{titletext}</h1>
-            <h3>{subtitle}</h3>
-            </div>
-        )
-    }
-}
 
 
 
@@ -391,6 +411,8 @@ class ExpandedTodo extends React.Component {
                 }
             return false
         }
+        this.dateId = new Date().getTime()
+        
         this.state = {
             editing : this.setEditing(),
             todo : this.findTodo()
@@ -400,15 +422,15 @@ class ExpandedTodo extends React.Component {
         let foundTodo = this.props.list.find(
         ((todo)=>todo.id===this.props.currentTodo)
         )
-        console.log(foundTodo)
         if (foundTodo!==-1 && foundTodo){return foundTodo}
+        console.log(this.dateId)
             let blank = {
                 name : 'New Todo' ,
                 content: 'type a description here',
                 priority :'low',
-                dueDate : 2,
+                dueDate : null,
                 projectNum : this.props.currentProject,
-                id : Date().now,
+                id : this.dateId
                 }
             return blank}
     toggleEdit =()=>{
