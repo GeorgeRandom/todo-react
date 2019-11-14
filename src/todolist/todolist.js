@@ -100,6 +100,15 @@ class TodoListApp extends React.Component {
             list : [...currentProjectlist,todo]
         })
     } */
+    createNewTodo = (todo) => {
+        let newlist = [...this.state.list,todo];
+        this.setState({list:newlist})
+    }
+    handleNewTodoClick=()=>{
+        this.setState({
+            currentTodo : -1
+        })
+    }
     handleTodoSelect = (num)=>{
         let newcurr=parseInt(num,10) || null;
         this.setState({currentTodo : newcurr})
@@ -108,9 +117,11 @@ class TodoListApp extends React.Component {
         let tdIndex= this.state.list.findIndex((todo)=>{
             return todo.id===newtodo.id
             })
-        this.setState((state)=>{
-            state.list[tdIndex] = newtodo
-        })
+        if (tdIndex!==-1)
+            this.setState((state)=>{
+             state.list[tdIndex] = newtodo
+             })
+        else this.createNewTodo(newtodo)
     }
     resetCurrentTodo =()=>{
         this.setState({currentTodo : null})
@@ -133,7 +144,9 @@ class TodoListApp extends React.Component {
         <div className='container'>
             <LeftPanel projects={this.state.projects}
                 onProjectSelect={this.handleProjectSelect} 
-                currentProject={this.state.currentProject}/>
+                currentProject={this.state.currentProject}
+                reset = {this.resetCurrentTodo}/>
+                
             <RightPanel list={this.state.list} 
                 currentProject={this.state.currentProject}
                 projects={this.state.projects}
@@ -144,7 +157,7 @@ class TodoListApp extends React.Component {
                 reset = {this.resetCurrentTodo}
                 />
             <LeftCtrls />
-            <RightCtrls /> 
+            <RightCtrls clicknew={this.handleNewTodoClick}/> 
             
         </div>
         )
@@ -164,7 +177,7 @@ class RightCtrls extends React.Component {
     render(){
         return(
             <div className='right-controls'> 
-                <button>ADD NEW</button>
+                <button onClick={this.props.clicknew} >ADD NEW</button>
             </div>
         )
     }
@@ -184,6 +197,7 @@ class LeftPanel extends React.Component {
                     <ProjectList projects={this.props.projects}
                     selectProject={this.props.onProjectSelect} 
                     currentProject={this.props.currentProject}
+                    reset={this.props.reset}
                     />
                     </div>
             </div>
@@ -220,6 +234,7 @@ class RightPanel extends React.Component {
                 reset = {this.props.reset}
                 checkTodo={this.props.onTodoCheck}
                 saveChanges={this.props.onTodoSave}
+                currentProject={this.props.currentProject}
                 />
             </div>
         }
@@ -252,6 +267,7 @@ class ProjectList extends React.Component {
         let selected = event.target.dataset.id;
         console.log(parseInt(selected,10))
         this.props.selectProject(selected)
+        this.props.reset()
     }
     
     render(){
@@ -369,14 +385,32 @@ class RightTitle extends React.Component {
 class ExpandedTodo extends React.Component {
     constructor(props){
         super(props);
-        this.todo=this.props.list.find(
-            ((todo)=>todo.id===this.props.currentTodo)
-            )
+        this.setEditing =()=>{
+            if (this.props.currentTodo===-1){
+                return true
+                }
+            return false
+        }
         this.state = {
-            editing : false,
-            todo:this.todo
+            editing : this.setEditing(),
+            todo : this.findTodo()
             }
-    }
+        }
+    findTodo = ()=>{
+        let foundTodo = this.props.list.find(
+        ((todo)=>todo.id===this.props.currentTodo)
+        )
+        console.log(foundTodo)
+        if (foundTodo!==-1 && foundTodo){return foundTodo}
+            let blank = {
+                name : 'New Todo' ,
+                content: 'type a description here',
+                priority :'low',
+                dueDate : 2,
+                projectNum : this.props.currentProject,
+                id : Date().now,
+                }
+            return blank}
     toggleEdit =()=>{
         let antiedit=!this.state.editing
         this.setState({editing: antiedit});
@@ -397,11 +431,12 @@ class ExpandedTodo extends React.Component {
         this.props.saveChanges(this.state.todo)
     }
     render(){
-        let todo=this.state.todo
-        let editing=this.state.editing
+        let todo = this.state.todo
+        let editing = this.state.editing
         return (
             
             <div className="todo-details">
+                
                 <input type='text'
                     className='todolist title'
                     name='name'
@@ -429,6 +464,11 @@ class ExpandedTodo extends React.Component {
                         <option value='low'>Low</option>
                     </select>
                 </p>
+                <TodoCheckbox
+                    id={todo.id}
+                    checked={todo.checked}
+                    checkTodo={this.props.checkTodo}
+                    />
                 
                 <p><button onClick={this.props.reset}>Back</button>
                     <EditSaveButton
@@ -436,12 +476,8 @@ class ExpandedTodo extends React.Component {
                     clickEdit={this.toggleEdit}
                     clickSave={this.saveChanges}
                     />
-                    <TodoCheckbox
-                    id={todo.id}
-                    checked={todo.checked}
-                    checkTodo={this.props.checkTodo}
-                    />
-                </p>
+                    
+                </p> 
             </div>
         )
     }
