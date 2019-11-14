@@ -2,11 +2,11 @@
 .container {
   text-align: center;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr 2fr;
 }
 
 
-.App-header {
+.left-header {
   background-color: #282c34;
   display: flex;
   flex-direction: column;
