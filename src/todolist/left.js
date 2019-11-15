@@ -49,23 +49,21 @@ class ProjectList extends React.Component {
         else
 
         return (
-            <div id='project-list'>
+            <ul id='project-list'>
                 {
                 list.map((project)=>{
                 return (
                     <li key={project.number}
-                    className={this.isSelected(project)}>
-                    {project.number} | {project.title} |
-                    <button className='select-project'
                     onClick={this.clickProject} 
                     data-id = {project.number}
-                    > select</button>
+                    className={this.isSelected(project)}>
+                    {project.number} | {project.title} 
                     </li>
                     )
                 })
                 }
                 {allbutton}
-            </div>
+            </ul>
         )    
     }
 }

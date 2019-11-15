@@ -34,6 +34,24 @@ class TodoListApp extends React.Component {
         newlist.splice(index,1);
         this.setState({ list : newlist})
     }
+    eraseProject = (id)=>{
+        let index=this.state.projects.findIndex((project)=>{
+            return project.number===parseInt(id,10)
+            })
+        
+        let newTdList = this.state.list.filter((todo)=>{
+            return todo.projectNum !== parseInt(id,10)})
+        
+        let newProjlist = [...this.state.projects]
+            newProjlist.splice(index,1);
+        this.setState({ list : newTdList,
+                        projects : newProjlist,
+                        currentProject : null,
+                        isEditingProject :false
+                        });
+        
+        
+    }
     resetCurrentTodo =()=>{
         this.setState({currentTodo : null})
     }
@@ -52,7 +70,8 @@ class TodoListApp extends React.Component {
     handleClickNewProject=()=>{
         this.setState({
             currentProject : -1,
-            isEditingProject : true
+            isEditingProject : true,
+            currentTodo :null,
         })
     }
     handleTodoSelect = (num)=>{
@@ -103,6 +122,10 @@ class TodoListApp extends React.Component {
         let id=event.target.dataset.id;
         this.eraseTodo(id)
     }
+    handleProjectErase=(event)=>{
+        let id=event.target.dataset.id;
+        this.eraseProject(id)
+    }
 
 
     /* liveProjectUpdate=(title,number)=>{
@@ -124,7 +147,9 @@ class TodoListApp extends React.Component {
                     isEditingProject={this.state.isEditingProject}
                     onClickEditProject={this.handleProjectEdit}
                     onClickSaveProject={this.handleProjectSave}
+                    onClickEraseProject={this.handleProjectErase}
                     onClickCancel={this.cancelProjectEdit}
+                    
                         />
             <TodoListDisplay
                     list={this.state.list} 

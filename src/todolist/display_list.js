@@ -23,10 +23,11 @@ class TodoListDisplay extends React.Component {
                     checked={todo.checked}
                     checkTodo={this.props.checkTodo}
                     />
-                    <b>{todo.name} </b> 
+                    <button className='todobutton'
+                    data-id={todo.id}
+                    onClick={this.clickTodo}
+                    >{todo.name} </button> 
                     priority : <b>{todo.priority} </b>
-                    <button data-id={todo.id}
-                    onClick={this.clickTodo}>select</button>
                     <button data-id={todo.id}
                     onClick={this.props.onClickErase}>X</button>
                     </span>

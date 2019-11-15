@@ -27,8 +27,8 @@ const stored = {todos: [
     },{
     projectNum : 2,
     id: 49,
-    dueDate : null,
-    priority : null,
+    dueDate : undefined,
+    priority : undefined,
     name : 'weird...',
     content : 'weirdly empty',
     checked : false,

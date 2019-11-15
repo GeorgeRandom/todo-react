@@ -55,6 +55,7 @@ class EditTodo extends React.Component {
     render(){
         let todo = this.state.todo
         let editing = this.state.editing
+        let buttontext= (this.state.editing) ? 'CANCEL' : 'BACK'
         return (
             
             <div className="edit todo-details">
@@ -99,7 +100,7 @@ class EditTodo extends React.Component {
                     checkTodo={this.props.checkTodo}
                     />
                 
-                <p><button onClick={this.props.reset}>Cancel</button>
+                <p><button onClick={this.props.reset}>{buttontext}</button>
                     <EditSaveButton
                     editing={editing}
                     clickEdit={this.toggleEdit}

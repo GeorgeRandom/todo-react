@@ -4,11 +4,14 @@
   text-align: center;
   display: inline-grid;
   gap : 10px;
-  grid-template-columns: 1fr 2fr;
-  margin:10px;
+  grid-template-columns: 1fr 3fr;
+  margin:4%;
   font-family: sans-serif;
+  min-height: 80vh;
+  align-content: space-between
 
 }
+
 ul{
   list-style-type: none;
 
@@ -25,6 +28,9 @@ ul{
 }
 .left-display{
   text-align:right;
+}
+.project{
+  margin-bottom: 8px;
 }
 .project.selected{
   background-color:pink;
@@ -59,5 +65,20 @@ textarea{
   max-width: 100%;
   margin-bottom: 20px;
 }
-
+button {
+  background-color: whitesmoke;
+  border-style: solid;
+  color: black;
+  padding: 2px 2px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.todobutton{
+  border-radius:8px;
+  background-color: rgb(190, 220, 255);
+  padding: 4px 4px;
+  border-width :0; 
+}
 

@@ -7,6 +7,7 @@ class RightHeader extends React.Component {
             projects={this.props.projects}
             currentProject={this.props.currentProject}
             clickEdit={this.props.onClickEditProject}
+            
             />
             )
         return (
@@ -15,6 +16,7 @@ class RightHeader extends React.Component {
             currentProject={this.props.currentProject}
             clickSave={this.props.onClickSaveProject}
             clickCancel={this.props.onClickCancel}
+            clickEraseProject={this.props.onClickEraseProject}
             />
         )
     }
@@ -63,7 +65,8 @@ class EditProject extends React.Component {
                     title : 'Project Title',
                     desc : 'describe your project here',
                     icon : 0,
-                    number : num+1
+                    number : num+1,
+                    isNew : true
                     }  
                 }
                 else{
@@ -80,7 +83,8 @@ class EditProject extends React.Component {
             title : this.current.title,
             desc : this.current.desc,
             number: this.current.number,
-            icon: this.current.icon
+            icon: this.current.icon,
+            isNew:this.current.isNew
             }
     }
     
@@ -120,7 +124,10 @@ class EditProject extends React.Component {
                     onChange={this.handleChange}>
                 </textarea>
                 <p>icon number{icon}</p>
-                <p><button onClick={this.props.clickCancel}>CANCEL</button>
+                <p>{!this.state.isNew && <button 
+                    data-id={this.state.number}
+                    onClick={this.props.clickEraseProject}>ERASE PROJECT</button>}
+                    <button onClick={this.props.clickCancel}>CANCEL</button>
                     <button onClick={this.clickSave}>SAVE</button></p>
             </div>
         )

@@ -13,7 +13,7 @@ class ControlBar extends React.Component{
 class LeftCtrls extends React.Component {
     render(){
         return (
-            <div className = 'left-controls'>
+            <div className = 'controls left-controls'>
                 <button onClick={this.props.clickNewProject}>New Project</button>
             </div>
         )
@@ -22,7 +22,7 @@ class LeftCtrls extends React.Component {
 class RightCtrls extends React.Component {
     render(){
         return(
-            <div className='right-controls'> 
+            <div className='controls right-controls'> 
                 <button onClick={this.props.clickNewTodo} >ADD NEW</button>
             </div>
         )
