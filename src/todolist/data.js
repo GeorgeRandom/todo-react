@@ -3,7 +3,7 @@ const stored = {todos: [
     {
     projectNum: 1,
     id : 1,
-    dueDate : '2019-11-25',
+    dueDate : '2017-11-25',
     priority : 'high',
     name : 'first todo',
     content : 'the first todo of the first project',

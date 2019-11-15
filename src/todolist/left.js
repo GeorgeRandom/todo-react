@@ -3,6 +3,9 @@ import React from 'react';
 
 
 
+
+
+
 class LeftHeader extends React.Component {
     render(){
         return (
@@ -15,6 +18,11 @@ class LeftHeader extends React.Component {
 }
 class ProjectList extends React.Component {
 
+
+    countTodos = (pnum,list)=>{
+        let newlist=list.filter((item)=>item.projectNum===pnum)
+        return newlist.length
+    }
     
     clickProject = (event) =>{
         let selected = event.target.dataset.id;
@@ -31,6 +39,7 @@ class ProjectList extends React.Component {
     
     
     render(){
+
         let list=this.props.projects;
         let allbutton = <li>
             <button className='select-all-projects'
@@ -52,12 +61,14 @@ class ProjectList extends React.Component {
             <ul id='project-list'>
                 {
                 list.map((project)=>{
+                    
                 return (
                     <li key={project.number}
                     onClick={this.clickProject} 
                     data-id = {project.number}
                     className={this.isSelected(project)}>
-                    {project.number} | {project.title} 
+                     {project.title}  
+                      ({this.countTodos(project.number,this.props.list)})
                     </li>
                     )
                 })
@@ -81,6 +92,7 @@ class LeftPanel extends React.Component {
                     selectProject={this.props.onProjectSelect} 
                     currentProject={this.props.currentProject}
                     reset={this.props.reset}
+                    list={this.props.list}
                     />
                     </div>
             </div>

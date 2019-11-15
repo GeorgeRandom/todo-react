@@ -1,5 +1,4 @@
 import React from 'react';
-import TodoCheckbox from './buttons'
 
 
 class EditTodo extends React.Component {
@@ -23,14 +22,14 @@ class EditTodo extends React.Component {
         ((todo)=>todo.id===this.props.currentTodo)
         )
         if (foundTodo!==-1 && foundTodo){return foundTodo}
-        console.log(this.dateId)
             let blank = {
                 name : 'New Todo' ,
                 content: 'type a description here',
                 priority :'low',
-                dueDate : '',
+                dueDate : new Date().toJSON().slice(0,10),
                 projectNum : this.props.currentProject,
-                id : this.dateId
+                id : this.dateId,
+                checked: false
                 }
             return blank}
     toggleEdit =()=>{
@@ -93,12 +92,6 @@ class EditTodo extends React.Component {
                         <option value='low'>Low</option>
                     </select>
                 </p>
-                done? 
-                <TodoCheckbox
-                    id={todo.id}
-                    checked={todo.checked}
-                    checkTodo={this.props.checkTodo}
-                    />
                 
                 <p><button onClick={this.props.reset}>{buttontext}</button>
                     <EditSaveButton

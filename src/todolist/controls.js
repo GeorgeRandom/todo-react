@@ -4,7 +4,10 @@ class ControlBar extends React.Component{
         return (
             <React.Fragment>
                 <LeftCtrls clickNewProject={this.props.onClickNewProject}/>
-                <RightCtrls clickNewTodo={this.props.onClickNewTodo}/>
+                <RightCtrls clickNewTodo={this.props.onClickNewTodo}
+                            toggleDone={this.props.toggleDone}
+                            hideDone={this.props.hideDone}
+                            clickSortByTime={this.props.sortByTime}/>
             </React.Fragment>
         )
     }
@@ -20,10 +23,14 @@ class LeftCtrls extends React.Component {
     }
 }
 class RightCtrls extends React.Component {
+
+    //add new / back / cancel//
     render(){
+        let toggleText= this.props.hideDone ? 'show completed tasks': 'hide completed tasks'
         return(
             <div className='controls right-controls'> 
-                <button onClick={this.props.clickNewTodo} >ADD NEW</button>
+                <button onClick={this.props.toggleDone}>{toggleText}</button>
+                <button onClick={this.props.clickSortByTime}>sort by time left</button>
             </div>
         )
     }

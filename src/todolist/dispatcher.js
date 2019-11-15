@@ -15,16 +15,22 @@ class TodoListApp extends React.Component {
             projects : stored.projects,
             currentProject: null,
             currentTodo :null,
-            isEditingProject :false
+            isEditingProject :false,
+            hideDone : false,
+            sortByTime : false
         }
     }
+
+    //create - destroy
     createNewTodo = (todo) => {
         let newlist = [...this.state.list,todo];
         this.setState({list:newlist})
     }
     createNewProject = (newproject)=>{
         let newprojectlist = [...this.state.projects,newproject];
-        this.setState({projects : newprojectlist})
+        this.setState({projects : newprojectlist,
+                    currentProject : newproject.number,
+                    isEditingProject: false})
     }
     eraseTodo =(id)=>{
         let index=this.state.list.findIndex((todo)=>{
@@ -52,6 +58,9 @@ class TodoListApp extends React.Component {
         
         
     }
+
+
+    //edit state
     resetCurrentTodo =()=>{
         this.setState({currentTodo : null})
     }
@@ -59,8 +68,12 @@ class TodoListApp extends React.Component {
         this.setState({isEditingProject :false})
         if (this.state.currentProject===-1){
             this.setState({currentProject : null})
-        }
+            }
     }
+
+
+
+
     //HANDLEEEERS!!!
     handleNewTodoClick=()=>{
         this.setState({
@@ -105,9 +118,10 @@ class TodoListApp extends React.Component {
             this.createNewProject(newproject)
             }
         else this.setState((state)=>{
-            state.projects[index] = newproject
-        })
-        this.cancelProjectEdit()
+            state.projects[index] = newproject;
+            state.isEditingProject = false;
+            return state
+            })
     }
     handleTodoCheck = (num)=>{
         let tdIndex= this.state.list.findIndex((td)=>{
@@ -127,16 +141,14 @@ class TodoListApp extends React.Component {
         this.eraseProject(id)
     }
 
+    //sorting, calculs (???
+    toggleDone = ()=>{
+        this.setState({hideDone : !this.state.hideDone})
+    }
+    sortByTime = ()=>{
+        this.setState({sortByTime : !this.state.sortByTime})
+    }
 
-    /* liveProjectUpdate=(title,number)=>{
-        let projectIndex=this.state.projects.findIndex((project)=>{
-            return project.number===number
-            })
-        console.log(projectIndex)
-        this.setState((state)=>{
-            state.projects[projectIndex].title = title
-        })
-    } */
     render(){
         let right
         if (this.state.currentTodo===null){
@@ -154,9 +166,12 @@ class TodoListApp extends React.Component {
             <TodoListDisplay
                     list={this.state.list} 
                     currentProject={this.state.currentProject}
+                    hideDone={this.state.hideDone}
+                    sortByTime={this.state.sortByTime}
                     selectTodo={this.handleTodoSelect}
                     checkTodo={this.handleTodoCheck}
                     onClickErase={this.handleTodoErase}
+                    onClickNewTodo={this.handleNewTodoClick}
                 />
                 </React.Fragment>
                 }
@@ -176,6 +191,7 @@ class TodoListApp extends React.Component {
         <div className='container'>
             <LeftPanel 
                 projects={this.state.projects}
+                list={this.state.list}
                 onProjectSelect={this.handleProjectSelect} 
                 currentProject={this.state.currentProject}
                 reset = {this.resetCurrentTodo}/>
@@ -198,7 +214,10 @@ class TodoListApp extends React.Component {
                 />*/}
             <ControlBars 
                 onClickNewProject={this.handleClickNewProject}
-                onClickNewTodo={this.handleNewTodoClick}/>
+                toggleDone={this.toggleDone}
+                sortByTime={this.sortByTime}
+                hideDone={this.state.hideDone}
+                />
             
         </div>
         )

@@ -102,6 +102,7 @@ class EditProject extends React.Component {
         let {title,desc,icon,number}=this.state;
         let newproj = {title,desc,icon,number};
         this.props.clickSave(newproj)
+       
         
     }
     render(){
