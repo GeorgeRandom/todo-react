@@ -3,7 +3,7 @@ const stored = {todos: [
     {
     projectNum: 1,
     id : 1,
-    dueDate : '25/11/2019',
+    dueDate : '2019-11-25',
     priority : 'high',
     name : 'first todo',
     content : 'the first todo of the first project',
@@ -11,7 +11,7 @@ const stored = {todos: [
     },{
     projectNum : 1,
     id : 2,
-    dueDate : '47/21/4078',
+    dueDate : '2019-12-25',
     priority : 'medium',
     name : 'second todo',
     content : 'another very important todo, with quite a very very long description indeed',
@@ -19,7 +19,7 @@ const stored = {todos: [
     },{
     projectNum: 2,
     id : 7,
-    dueDate : '25/18/2019',
+    dueDate : '2020-02-14',
     priority : 'high',
     name : 'yet another todo',
     content : "And this one is checked",
@@ -54,7 +54,7 @@ const stored = {todos: [
 }
 let lonely = makeTodo({
 name:'lone todo',
-content : 'a lonely todo',
+content : 'this todo has no parent project',
 })
 stored.todos.push(lonely)
 console.log(stored)

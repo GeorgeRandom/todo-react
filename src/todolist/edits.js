@@ -92,13 +92,14 @@ class EditTodo extends React.Component {
                         <option value='low'>Low</option>
                     </select>
                 </p>
+                done? 
                 <TodoCheckbox
                     id={todo.id}
                     checked={todo.checked}
                     checkTodo={this.props.checkTodo}
                     />
                 
-                <p><button onClick={this.props.reset}>Back</button>
+                <p><button onClick={this.props.reset}>Cancel</button>
                     <EditSaveButton
                     editing={editing}
                     clickEdit={this.toggleEdit}
