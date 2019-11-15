@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import TodoListApp from './todolist/todolist.js'
+import TodoListApp from './todolist/dispatcher.js'
 
 function App() {
   return (
