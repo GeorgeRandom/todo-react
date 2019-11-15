@@ -22,6 +22,13 @@ class ProjectList extends React.Component {
         this.props.selectProject(selected)
         this.props.reset()
     }
+    isSelected =(project)=>{
+        if (project.number===this.props.currentProject)
+        {return 'selected project'}
+        return 'project'
+    }
+
+    
     
     render(){
         let list=this.props.projects;
@@ -46,7 +53,8 @@ class ProjectList extends React.Component {
                 {
                 list.map((project)=>{
                 return (
-                    <li key={project.number}>
+                    <li key={project.number}
+                    className={this.isSelected(project)}>
                     {project.number} | {project.title} |
                     <button className='select-project'
                     onClick={this.clickProject} 

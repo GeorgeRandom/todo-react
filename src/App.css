@@ -9,10 +9,13 @@
   font-family: sans-serif;
 
 }
+ul{
+  list-style-type: none;
 
+}
 
 .left-header {
-  background-color: #282c34;
+  background-color: #293c64;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -20,9 +23,14 @@
   font-size: calc(8px + 2vmin);
   color: white;
 }
+.left-display{
+  text-align:right;
+}
+.project.selected{
+  background-color:pink;
+}
 
 .edit{
-  display:flex;
   flex-direction:column;
   align-items:center;
   max-width:100%;

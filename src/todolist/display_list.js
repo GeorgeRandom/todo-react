@@ -9,6 +9,11 @@ class TodoListDisplay extends React.Component {
    
     renderTodos(list, num){
         let sortedList = this.sortByProj(list,num)
+        if (sortedList.length===0){
+            return(
+                <p>no todos in this project</p>
+            )
+            }
         return sortedList.map((todo)=>{
             return (
                 <li key ={todo.id}>
@@ -18,7 +23,7 @@ class TodoListDisplay extends React.Component {
                     checked={todo.checked}
                     checkTodo={this.props.checkTodo}
                     />
-                    name : <b>{todo.name} </b> 
+                    <b>{todo.name} </b> 
                     priority : <b>{todo.priority} </b>
                     <button data-id={todo.id}
                     onClick={this.clickTodo}>select</button>

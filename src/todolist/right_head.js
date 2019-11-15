@@ -26,7 +26,7 @@ class RightHeader extends React.Component {
 class ProjectTitle extends React.Component {
     render(){
         let titletext = 'FULL LIST';
-        let subtitle = 'all the todos'
+        let subtitle = '(all the todos)'
         let butt=''
         let p = this.props.currentProject
         let selectedProject=this.props.projects.find((project)=>{
