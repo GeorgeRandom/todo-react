@@ -17,10 +17,11 @@
   color: white;
 }
 
-.todo-details{
+.edit{
   display:flex;
   flex-direction:column;
   align-items:center;
+  max-width:100%;
 }
 textarea{
   overflow: auto; 

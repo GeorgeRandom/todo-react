@@ -4,8 +4,8 @@ import LeftPanel from './left'
 import TodoListDisplay from './display_list'
 import ControlBars from './controls'
 import RightHeader from './right_head'
-import EditProject from './edits'
 import EditTodo from './edits'
+
 
 class TodoListApp extends React.Component {
     constructor(props){
@@ -22,9 +22,28 @@ class TodoListApp extends React.Component {
         let newlist = [...this.state.list,todo];
         this.setState({list:newlist})
     }
+    createNewProject = (newproject)=>{
+        let newprojectlist = [...this.state.projects,newproject];
+        this.setState({projects : newprojectlist})
+    }
+    eraseTodo =(id)=>{
+        let index=this.state.list.findIndex((todo)=>{
+            return todo.id===parseInt(id,10)
+        })
+        let newlist = [...this.state.list]
+        newlist.splice(index,1);
+        this.setState({ list : newlist})
+    }
     resetCurrentTodo =()=>{
         this.setState({currentTodo : null})
     }
+    cancelProjectEdit = ()=>{
+        this.setState({isEditingProject :false})
+        if (this.state.currentProject===-1){
+            this.setState({currentProject : null})
+        }
+    }
+    //HANDLEEEERS!!!
     handleNewTodoClick=()=>{
         this.setState({
             currentTodo : -1
@@ -54,10 +73,22 @@ class TodoListApp extends React.Component {
     handleProjectSelect = (num)=>{
         let newcurr=parseInt(num,10) || null
         this.setState({currentProject : newcurr})
+        this.cancelProjectEdit()
     }
     handleProjectEdit = ()=>{
-        let reverse=!this.state.isEditingProject
-        this.setState({isEditingProject:reverse})
+        this.setState({isEditingProject:true})
+    }
+    handleProjectSave = (newproject) =>{
+        let index=this.state.projects.findIndex((project)=>{
+            return project.number===newproject.number
+        })
+        if (index===-1){
+            this.createNewProject(newproject)
+            }
+        else this.setState((state)=>{
+            state.projects[index] = newproject
+        })
+        this.cancelProjectEdit()
     }
     handleTodoCheck = (num)=>{
         let tdIndex= this.state.list.findIndex((td)=>{
@@ -67,6 +98,10 @@ class TodoListApp extends React.Component {
             state.list[tdIndex].checked = !state.list[tdIndex].checked 
             return state
        })
+    }
+    handleTodoErase = (event)=>{
+        let id=event.target.dataset.id;
+        this.eraseTodo(id)
     }
 
 
@@ -86,12 +121,17 @@ class TodoListApp extends React.Component {
             <RightHeader 
                     projects={this.state.projects}
                     currentProject={this.state.currentProject}
+                    isEditingProject={this.state.isEditingProject}
+                    onClickEditProject={this.handleProjectEdit}
+                    onClickSaveProject={this.handleProjectSave}
+                    onClickCancel={this.cancelProjectEdit}
                         />
             <TodoListDisplay
                     list={this.state.list} 
                     currentProject={this.state.currentProject}
                     selectTodo={this.handleTodoSelect}
                     checkTodo={this.handleTodoCheck}
+                    onClickErase={this.handleTodoErase}
                 />
                 </React.Fragment>
                 }
@@ -102,6 +142,8 @@ class TodoListApp extends React.Component {
                 list={this.state.list}
                 reset = {this.resetCurrentTodo}
                 onTodoSave={this.handleTodoSave}
+                currentProject={this.state.currentProject}
+                checkTodo={this.handleTodoCheck}
                 />
             </React.Fragment>
         }

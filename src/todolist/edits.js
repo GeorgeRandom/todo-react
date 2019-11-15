@@ -1,4 +1,5 @@
 import React from 'react';
+import TodoCheckbox from './buttons'
 
 
 class EditTodo extends React.Component {
@@ -27,7 +28,7 @@ class EditTodo extends React.Component {
                 name : 'New Todo' ,
                 content: 'type a description here',
                 priority :'low',
-                dueDate : null,
+                dueDate : '',
                 projectNum : this.props.currentProject,
                 id : this.dateId
                 }
@@ -56,7 +57,7 @@ class EditTodo extends React.Component {
         let editing = this.state.editing
         return (
             
-            <div className="todo-details">
+            <div className="edit todo-details">
                 
                 <input type='text'
                     className='todolist title'
@@ -74,7 +75,13 @@ class EditTodo extends React.Component {
                     rows={10}
                     onChange={this.handleChange}>
                     </textarea>
-                <p>date : {todo.dueDate}</p>
+                <p>due date:<input 
+                        disabled={!editing}
+                        type='date'
+                        name='dueDate' 
+                        value={todo.dueDate}
+                        onChange={this.handleChange}
+                    ></input>  </p>
                 <p>priority:<select 
                             name='priority'
                             value={todo.priority}
@@ -85,11 +92,11 @@ class EditTodo extends React.Component {
                         <option value='low'>Low</option>
                     </select>
                 </p>
-                {/* <TodoCheckbox
+                <TodoCheckbox
                     id={todo.id}
                     checked={todo.checked}
                     checkTodo={this.props.checkTodo}
-                    /> */}
+                    />
                 
                 <p><button onClick={this.props.reset}>Back</button>
                     <EditSaveButton
@@ -113,6 +120,9 @@ function EditSaveButton(props){
         <button onClick={props.clickEdit}>EDIT</button>
     )
 }
+
+
+
 
 
 

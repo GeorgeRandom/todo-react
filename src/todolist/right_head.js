@@ -1,15 +1,29 @@
 import React from 'react';
-
-
-
-
 class RightHeader extends React.Component {
-    saveChanges=()=>{
-        console.log('save')
+    render(){
+        if (this.props.isEditingProject===false)
+        return(
+            <ProjectTitle 
+            projects={this.props.projects}
+            currentProject={this.props.currentProject}
+            clickEdit={this.props.onClickEditProject}
+            />
+            )
+        return (
+            <EditProject 
+            projects={this.props.projects}
+            currentProject={this.props.currentProject}
+            clickSave={this.props.onClickSaveProject}
+            clickCancel={this.props.onClickCancel}
+            />
+        )
     }
-    findSelectedProject =()=>{
-        
-    }
+}
+
+
+
+
+class ProjectTitle extends React.Component {
     render(){
         let titletext = 'FULL LIST';
         let subtitle = 'all the todos'
@@ -32,7 +46,12 @@ class RightHeader extends React.Component {
         )
     }
 }
-class ProjectEdit extends React.Component {
+
+
+
+
+
+class EditProject extends React.Component {
     constructor(props){
         super(props);
         this.createDefault =()=>{
@@ -64,6 +83,7 @@ class ProjectEdit extends React.Component {
             icon: this.current.icon
             }
     }
+    
     handleChange = (event) =>{
         
         let key = event.target.name;
@@ -72,13 +92,19 @@ class ProjectEdit extends React.Component {
             state[key] = value 
             return state
        })
-       this.props.liveUpdate(this.state.title, this.state.number)
+       /* this.props.liveUpdate(this.state.title, this.state.number) */
+    }
+    clickSave = () =>{
+        let {title,desc,icon,number}=this.state;
+        let newproj = {title,desc,icon,number};
+        this.props.clickSave(newproj)
+        
     }
     render(){
         let {title,desc,icon}=this.state
         return(
             
-            <div className='edit-project'>
+            <div className='edit project-details'>
             <input type='text'
                     className='project title'
                     name='title'
@@ -87,22 +113,20 @@ class ProjectEdit extends React.Component {
                    >
                 </input>
                 <textarea
-                    className='project description'
+                    className='project-description'
                     name='desc'
                     value={desc}
                     rows={10}
                     onChange={this.handleChange}>
                 </textarea>
                 <p>icon number{icon}</p>
-                <p><button>CANCEL</button>
-                    <button>SAVE</button></p>
+                <p><button onClick={this.props.clickCancel}>CANCEL</button>
+                    <button onClick={this.clickSave}>SAVE</button></p>
             </div>
         )
     }
 
 }
-
-
 
 
 

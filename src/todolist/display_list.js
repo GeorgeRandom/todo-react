@@ -1,4 +1,5 @@
 import React from 'react';
+import TodoCheckbox from './buttons'
 
 class TodoListDisplay extends React.Component {
     sortByProj = (list,num)=>{
@@ -20,7 +21,9 @@ class TodoListDisplay extends React.Component {
                     name : <b>{todo.name} </b> 
                     priority : <b>{todo.priority} </b>
                     <button data-id={todo.id}
-                    onClick={this.clickTodo}>edit</button>
+                    onClick={this.clickTodo}>select</button>
+                    <button data-id={todo.id}
+                    onClick={this.props.onClickErase}>X</button>
                     </span>
                     
                 </li>
@@ -45,19 +48,5 @@ class TodoListDisplay extends React.Component {
 }
 
 
-class TodoCheckbox extends React.Component{
-    clickCheck = (event)=>{
-        console.log(event.target.dataset.id,event.target);
-        this.props.checkTodo(event.target.dataset.id)
-        }
-    render(){
-        return(
-        <input type='checkbox' 
-            className='todo-checkbox'
-            data-id={this.props.id}
-            checked = {this.props.checked}
-            onChange={this.clickCheck}></input>
-            )
-    }
-}
+
 export default TodoListDisplay
