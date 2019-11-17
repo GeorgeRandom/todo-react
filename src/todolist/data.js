@@ -1,9 +1,9 @@
 
-const stored = {todos: [
+const defaultData = {todos: [
     {
     projectNum: 1,
     id : 1,
-    dueDate : '2017-11-25',
+    dueDate : '2022-11-25',
     priority : 'high',
     name : 'first todo',
     content : 'the first todo of the first project',
@@ -56,8 +56,7 @@ let lonely = makeTodo({
 name:'lone todo',
 content : 'this todo has no parent project',
 })
-stored.todos.push(lonely)
-console.log(stored)
+defaultData.todos.push(lonely)
 
 
 
@@ -79,4 +78,4 @@ return({
     checked : false
 })
 }
-export default stored
+export default defaultData

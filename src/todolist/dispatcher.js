@@ -1,18 +1,30 @@
 import React from 'react';
-import stored from './data'
+import defaultData from './data'
 import LeftPanel from './left'
 import TodoListDisplay from './display_list'
 import ControlBars from './controls'
 import RightHeader from './right_head'
 import EditTodo from './edits'
 
+function FirstLoad(){
+    if (localStorage.getItem('list')){
+        let localProjects = JSON.parse(localStorage.getItem('projects'));
+        let localList = JSON.parse(localStorage.getItem('list'));
+        return {todos : localList,
+            projects:localProjects}
+        }
+    else return {todos: defaultData.todos,
+                projects:defaultData.projects}
+}
+
 
 class TodoListApp extends React.Component {
     constructor(props){
         super(props);
+        let load = FirstLoad()
         this.state = {
-            list : stored.todos,
-            projects : stored.projects,
+            list : load.todos,
+            projects : load.projects,
             currentProject: null,
             currentTodo :null,
             isEditingProject :false,
@@ -155,6 +167,13 @@ class TodoListApp extends React.Component {
         )
     }
 
+    //LOCAS STORAGE TEST
+    localstor =()=>{
+        localStorage.setItem('projects',JSON.stringify(this.state.projects))
+        localStorage.setItem('list',JSON.stringify(this.state.list))
+        console.log(localStorage)
+        }
+
     render(){
         let right
         if (this.state.currentTodo===null){
@@ -214,6 +233,7 @@ class TodoListApp extends React.Component {
                 onClickNewProject={this.handleClickNewProject}
                 toggleDone={this.toggleDone}
                 sortByTime={this.sortByTime}
+                localstor={this.localstor}
                 />
             
         </div>

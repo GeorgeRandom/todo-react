@@ -2,7 +2,8 @@ import React from 'react';
 function ControlBar (props) {
         return (
             <React.Fragment>
-                <LeftCtrls clickNewProject={props.onClickNewProject}/>
+                <LeftCtrls clickNewProject={props.onClickNewProject}
+                    localstor={props.localstor}/>
                 <RightCtrls clickNewTodo={props.onClickNewTodo}
                             toggleDone={props.toggleDone}
                             hideDone={props.hideDone}
@@ -15,7 +16,8 @@ function ControlBar (props) {
 function LeftCtrls(props) {
         return (
             <div className = 'controls left-controls'>
-                <button onClick={props.clickNewProject}>New Project of death</button>
+                <button onClick={props.clickNewProject}>New Project</button>
+                <button onClick={props.localstor}>local storage (test</button>
             </div>
         )
 }
