@@ -1,52 +1,47 @@
 import React from 'react';
-class RightHeader extends React.Component {
-    render(){
-        if (this.props.isEditingProject===false)
+function RightHeader(props){
+    if (props.isEditingProject===false)
         return(
             <ProjectTitle 
-            projects={this.props.projects}
-            currentProject={this.props.currentProject}
-            clickEdit={this.props.onClickEditProject}
-            
+            projects={props.projects}
+            currentProject={props.currentProject}
+            clickEdit={props.onClickEditProject}
             />
             )
-        return (
-            <EditProject 
-            projects={this.props.projects}
-            currentProject={this.props.currentProject}
-            clickSave={this.props.onClickSaveProject}
-            clickCancel={this.props.onClickCancel}
-            clickEraseProject={this.props.onClickEraseProject}
-            />
+    return (
+        <EditProject 
+        projects={props.projects}
+        currentProject={props.currentProject}
+        clickSave={props.onClickSaveProject}
+        clickCancel={props.onClickCancel}
+        clickEraseProject={props.onClickEraseProject}
+        />
         )
-    }
 }
 
 
 
 
-class ProjectTitle extends React.Component {
-    render(){
-        let titletext = 'FULL LIST';
-        let subtitle = '(all the todos)'
-        let butt=''
-        let p = this.props.currentProject
-        let selectedProject=this.props.projects.find((project)=>{
-            return project.number===p
+function ProjectTitle(props){
+    let titletext = 'FULL LIST';
+    let subtitle = '(all the todos)'
+    let butt=''
+    let p = props.currentProject
+    let selectedProject=props.projects.find((project)=>{
+        return project.number===p
             }) 
         
-        if (p){ 
-            titletext = selectedProject.title
-            subtitle = selectedProject.desc
-            butt= <button onClick={this.props.clickEdit}>EDIT</button>
-        }
-        return(
-            <div className = 'todo-title'>
-            <h1>{titletext}</h1>
-            <h3>{subtitle} {butt }</h3>
-            </div>
-        )
+    if (p){ 
+        titletext = selectedProject.title
+        subtitle = selectedProject.desc
+        butt= <button onClick={props.clickEdit}>EDIT</button>
     }
+    return(
+        <div className = 'todo-title'>
+        <h1>{titletext}</h1>
+        <h3>{subtitle} {butt }</h3>
+        </div>
+    )
 }
 
 
