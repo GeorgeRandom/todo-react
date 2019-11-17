@@ -1,13 +1,76 @@
 import React from 'react';
 import TodoCheckbox from './buttons'
 import { differenceInDays } from 'date-fns'
+//REFACTOOOOOR!
+//build list
+function RenderTodos(props){
+    //handler
+    const clickTodo = (event) =>{
+        let selected = event.target.dataset.id;
+        props.handleClickTodo(selected)
+    }
+    //additional sorting
+    const sortByTime = (list)=>{
+        let newlist = [...list]
+        newlist.sort((a,b)=>((a.timeleft > b.timeleft) || !a.timeleft ) ? 1 : -1)
+        return newlist
+    }
+    const hideDone = (list)=>{
+        return list.filter((item)=>item.checked===false)
+    }
+    //build list
+    let listToRender = [...props.list]
+    
+    //sort it!
+    if (props.todoSortingType.sortByTime){
+        listToRender= sortByTime(listToRender)
+    }
+    if (props.todoSortingType.hideDone){
+        listToRender = hideDone(listToRender)
+    }
 
-class TodoListDisplay extends React.Component {
-    sortByProj = (list,num)=>{
+    return listToRender.map((todo)=>{
+        return (
+            <li key ={todo.id}>
+                <span>
+                <TodoCheckbox
+                id={todo.id}
+                checked={todo.checked}
+                checkTodo={props.checkTodo}
+                />
+                <button className='todobutton'
+                data-id={todo.id}
+                onClick={clickTodo}
+                >{todo.name} </button> 
+
+                priority : <b>{todo.priority} </b>
+                {(todo.timeleft) && <i>{todo.timeleft} days left</i>}
+
+                <button data-id={todo.id}
+                onClick={props.handleClickErase}>X</button>
+                </span>
+                    
+            </li>
+        )
+    }
+    )
+}
+
+function TodoListDisplay(props) {
+    //base return
+    if (props.list.length===0){
+        return(
+            <p>no todos in this project</p>
+        )
+        }
+    //default sorting
+    const sortByProj = (list,num)=>{
         if (num === null){return list} else
         return list.filter((item)=>item.projectNum===num)
         }
-    timeLeft=(todo)=>{
+    
+    // timeleft
+    const timeLeft=(todo)=>{
             let date = todo.dueDate
             let then
                if (date) {
@@ -18,73 +81,29 @@ class TodoListDisplay extends React.Component {
                }
                 else return
             }
-    addTimeLeftToItems=(list)=>{
+    const getTimeLeft=(list)=>{
         return list.map((item)=>{
-            item.timeleft=this.timeLeft(item);
+            item.timeleft=timeLeft(item);
             return item
         })
     }
+    //getting propsch, basic sort, adding timeleft
+    let newList = [...props.list];
+    let sortedList = getTimeLeft(sortByProj(newList , props.currentProject))
 
-    
-   
-    renderTodos(list, num){
-        let sortedList = this.sortByProj(list,num)
-        this.addTimeLeftToItems(sortedList)
-        
-        if (sortedList.length===0){
-            return(
-                <p>no todos in this project</p>
-            )
-            }
-        if (this.props.hideDone){
-            sortedList=sortedList.filter((item)=>item.checked===false)
-            }
-        if (this.props.sortByTime){
-            sortedList.sort((a,b)=>(a.timeleft > b.timeleft) ? 1 : -1)
-            console.table(sortedList)
-            }
-        
-        return sortedList.map((todo)=>{
-            return (
-                <li key ={todo.id}>
-                    <span>
-                    <TodoCheckbox
-                    id={todo.id}
-                    checked={todo.checked}
-                    checkTodo={this.props.checkTodo}
-                    />
-                    <button className='todobutton'
-                    data-id={todo.id}
-                    onClick={this.clickTodo}
-                    >{todo.name} </button> 
-                    priority : <b>{todo.priority} </b>
-                    {(todo.timeleft) && <i>{todo.timeleft} days left</i>}
-                    <button data-id={todo.id}
-                    onClick={this.props.onClickErase}>X</button>
-                    </span>
-                    
-                </li>
-            )
-        }
-        )
-    }
-    
-    clickTodo = (event) =>{
-            let selected = event.target.dataset.id;
-            console.log(event.target)
-            this.props.selectTodo(selected)
-    }
-    render(){
-        return(
-            <ul>
-                {this.renderTodos(this.props.list, this.props.currentProject)}
-                <button onClick={this.props.onClickNewTodo} >ADD NEW</button>
-            </ul>
-        )
-    } 
-
+return(
+    <ul>
+    <RenderTodos 
+    list={sortedList}
+    checkTodo={props.checkTodo}
+    todoSortingType={props.todoSortingType}
+    //bundle handlers!
+    handleClickErase={props.handleClickErase}
+    handleClickTodo={props.handleClickTodo}
+    />
+    <button onClick={props.onClickNewTodo} >ADD NEW</button>
+    </ul>
+)
 }
-
-
 
 export default TodoListDisplay

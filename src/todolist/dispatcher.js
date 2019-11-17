@@ -16,8 +16,8 @@ class TodoListApp extends React.Component {
             currentProject: null,
             currentTodo :null,
             isEditingProject :false,
-            hideDone : false,
-            sortByTime : false
+            todoSortingType : {hideDone : false,
+                            sortByTime : false}
         }
     }
 
@@ -143,10 +143,16 @@ class TodoListApp extends React.Component {
 
     //sorting, calculs (???
     toggleDone = ()=>{
-        this.setState({hideDone : !this.state.hideDone})
+        this.setState((state)=>{
+            state.todoSortingType.hideDone = !this.state.todoSortingType.hideDone
+            return state}
+        )
     }
     sortByTime = ()=>{
-        this.setState({sortByTime : !this.state.sortByTime})
+        this.setState((state)=>{
+            state.todoSortingType.sortByTime = !this.state.todoSortingType.sortByTime
+            return state}
+        )
     }
 
     render(){
@@ -157,6 +163,7 @@ class TodoListApp extends React.Component {
                     projects={this.state.projects}
                     currentProject={this.state.currentProject}
                     isEditingProject={this.state.isEditingProject}
+
                     onClickEditProject={this.handleProjectEdit}
                     onClickSaveProject={this.handleProjectSave}
                     onClickEraseProject={this.handleProjectErase}
@@ -166,11 +173,11 @@ class TodoListApp extends React.Component {
             <TodoListDisplay
                     list={this.state.list} 
                     currentProject={this.state.currentProject}
-                    hideDone={this.state.hideDone}
-                    sortByTime={this.state.sortByTime}
-                    selectTodo={this.handleTodoSelect}
+                    todoSortingType={this.state.todoSortingType}
+                    
                     checkTodo={this.handleTodoCheck}
-                    onClickErase={this.handleTodoErase}
+                    handleClickTodo={this.handleTodoSelect}
+                    handleClickErase={this.handleTodoErase}
                     onClickNewTodo={this.handleNewTodoClick}
                 />
                 </React.Fragment>
@@ -180,9 +187,10 @@ class TodoListApp extends React.Component {
                 <EditTodo 
                 currentTodo={this.state.currentTodo}
                 list={this.state.list}
+                currentProject={this.state.currentProject}
+
                 reset = {this.resetCurrentTodo}
                 onTodoSave={this.handleTodoSave}
-                currentProject={this.state.currentProject}
                 checkTodo={this.handleTodoCheck}
                 />
             </React.Fragment>
@@ -192,31 +200,20 @@ class TodoListApp extends React.Component {
             <LeftPanel 
                 projects={this.state.projects}
                 list={this.state.list}
-                onProjectSelect={this.handleProjectSelect} 
                 currentProject={this.state.currentProject}
+
+                onProjectSelect={this.handleProjectSelect} 
                 reset = {this.resetCurrentTodo}/>
             <div className='right-panel'>
                 {right}
             </div>
 
-               {/*  
-            <RightPanel list={this.state.list} 
-                currentProject={this.state.currentProject}
-                projects={this.state.projects}
-                currentTodo = {this.state.currentTodo}
-                onTodoSelect={this.handleTodoSelect}
-                onTodoCheck={this.handleTodoCheck}
-                onTodoSave={this.handleTodoSave}
-                onProjectEdit={this.handleProjectEdit}
-                reset = {this.resetCurrentTodo}
-                isEdit= {this.state.isEditingProject}
-                liveUpdate={this.liveProjectUpdate}
-                />*/}
             <ControlBars 
+                hideDone={this.state.todoSortingType.hideDone}
+
                 onClickNewProject={this.handleClickNewProject}
                 toggleDone={this.toggleDone}
                 sortByTime={this.sortByTime}
-                hideDone={this.state.hideDone}
                 />
             
         </div>
