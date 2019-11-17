@@ -5,6 +5,8 @@ import TodoListDisplay from './display_list'
 import ControlBars from './controls'
 import RightHeader from './right_head'
 import EditTodo from './edits'
+import Procrastinate from './procrastinate'
+import { addYears , format, addDays , addMonths, addWeeks } from 'date-fns'
 
 function FirstLoad(){
     if (localStorage.getItem('list')){
@@ -28,8 +30,10 @@ class TodoListApp extends React.Component {
             currentProject: null,
             currentTodo :null,
             isEditingProject :false,
+            isProcrastinating : false,
             todoSortingType : {hideDone : false,
-                            sortByTime : false}
+                            sortByTime : false,
+                            sortbyPriority:false}
         }
     }
 
@@ -153,6 +157,14 @@ class TodoListApp extends React.Component {
         this.eraseProject(id)
     }
 
+    //procrastination 
+    toggleProcrastinate = ()=>{
+        this.setState({
+            isProcrastinating : !this.state.isProcrastinating
+        })
+
+    }
+
     //sorting, calculs (???
     toggleDone = ()=>{
         this.setState((state)=>{
@@ -166,14 +178,66 @@ class TodoListApp extends React.Component {
             return state}
         )
     }
+    sortByPriority = ()=>{
+        this.setState((state)=>{
+            state.todoSortingType.sortByPriority = !this.state.todoSortingType.sortByPriority
+            return state}
+        )
+    }
 
-    //LOCAS STORAGE TEST
+    //LOCAL STORAGE TEST
     localstor =()=>{
         localStorage.setItem('projects',JSON.stringify(this.state.projects))
         localStorage.setItem('list',JSON.stringify(this.state.list))
         console.log(localStorage)
         }
+    
+    //  juguet
+    juguet = (a)=>{
+    const prioMap = {
+        'high' : 3,
+        'medium' : 2,
+        'low' : 1,
+        'very low' : 0
+        }
+    const unMap = ['very low','low','medium','high']
+    let newlist = [...this.state.list].map((item)=>{
+        let prioval = (prioMap[item.priority] + a);
+        if (prioval<0){prioval=0};
+        if (prioval>3){prioval=3};
+        item.priority = unMap[prioval];
+        return item
+        })
+    this.setState({list : newlist,
+           isProcrastinating : false })     
+    }
 
+    yordanize = (num,type)=>{
+        let baselist=[...this.state.list]
+        let newlist = baselist.map((todo)=>{
+                if (!todo.dueDate){return todo}
+                else {
+                    let temp = todo.dueDate.split('-')
+                    let date = new Date (temp[0],(temp[1]-1),temp[2])
+                    let newdate
+                    if (type==='years'){newdate=addYears(date,num)}
+                    if (type==='months'){newdate=addMonths(date,num)}
+                    if (type==='weeks'){newdate=addWeeks(date,num)}
+                    else {newdate = addDays(date,num)}
+                    console.log(type)
+                    todo.dueDate = format(newdate,'yyyy-MM-dd');
+                    return todo
+                    }
+            })
+            
+        
+        
+    this.setState({
+        list : newlist,
+        isProcrastinating : false })
+     
+    }
+    
     render(){
         let right
         if (this.state.currentTodo===null){
@@ -215,7 +279,12 @@ class TodoListApp extends React.Component {
             </React.Fragment>
         }
         return (
+    <div className='wrapper'>
+       {(this.state.isProcrastinating) &&  <Procrastinate 
+                    juguetify = {this.juguet} 
+                    yordanize = {this.yordanize}/>}
         <div className='container'>
+            
             <LeftPanel 
                 projects={this.state.projects}
                 list={this.state.list}
@@ -233,10 +302,14 @@ class TodoListApp extends React.Component {
                 onClickNewProject={this.handleClickNewProject}
                 toggleDone={this.toggleDone}
                 sortByTime={this.sortByTime}
+                sortByPriority={this.sortByPriority}
+                
+                clickProcrastinate = {this.toggleProcrastinate}
+
                 localstor={this.localstor}
-                />
-            
+                />   
         </div>
+    </div>
         )
     }
 }

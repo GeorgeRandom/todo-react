@@ -89,3 +89,40 @@ button {
   border-width :0; 
 }
 
+.procrastinate{
+  display: grid;
+  gap : 20px;
+  text-align : center;
+  padding:1em;
+  position: fixed;
+  
+  height:80%;
+  width:60%;
+  left:20%;
+  right:20%;
+  border:solid blue;
+  border-radius:20px;
+  z-index:1;
+  background-color : white;
+}
+.procrastiform{
+  padding: 10px;
+  display: flex;
+  flex-flow: row;
+  align-items: stretch;
+  justify-content : space-between;
+  border : 2px solid black;
+}
+.yordaform{
+  text-align : left;
+}
+.jugform{
+  text-align:right;
+}
+.unprocrast{
+  height : 100px;
+  text-shadow: dodgerblue;
+  font-weight :bolder;
+  font-size : 20px;
+}
+

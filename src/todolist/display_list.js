@@ -4,6 +4,12 @@ import { differenceInDays } from 'date-fns'
 //REFACTOOOOOR!
 //build list
 function RenderTodos(props){
+    const prioMap = {
+        'high' : 3,
+        'medium' : 2,
+        'low' : 1,
+        'very low' : 0
+        }
     //handler
     const clickTodo = (event) =>{
         let selected = event.target.dataset.id;
@@ -18,6 +24,11 @@ function RenderTodos(props){
     const hideDone = (list)=>{
         return list.filter((item)=>item.checked===false)
     }
+    const sortByPriority = (list)=>{
+        let newlist = [...list]
+        newlist.sort((a,b)=>((prioMap[b.priority]>prioMap[a.priority]) || !a.priority) ? 1 : -1)
+        return newlist  
+    }
     //build list
     let listToRender = [...props.list]
     
@@ -28,6 +39,15 @@ function RenderTodos(props){
     if (props.todoSortingType.hideDone){
         listToRender = hideDone(listToRender)
     }
+    if (props.todoSortingType.sortByPriority){
+        listToRender = sortByPriority(listToRender)
+    }
+     //base return
+    if (props.list.length===0){
+        return(
+            <p>no todos in this project</p>
+        )
+        }
 
     return listToRender.map((todo)=>{
         return (
@@ -57,12 +77,7 @@ function RenderTodos(props){
 }
 
 function TodoListDisplay(props) {
-    //base return
-    if (props.list.length===0){
-        return(
-            <p>no todos in this project</p>
-        )
-        }
+   
     //default sorting
     const sortByProj = (list,num)=>{
         if (num === null){return list} else
@@ -75,8 +90,10 @@ function TodoListDisplay(props) {
             let then
                if (date) {
                    let nowdate=new Date()
+                   
                     then=date.split('-')
-                    let thendate=new Date(then[0],then[1],then[2])
+                    let thendate=new Date(then[0],(then[1]-1),then[2])
+                    console.log(then,thendate)
                    return (differenceInDays(thendate,nowdate))
                }
                 else return
